@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2025-02-11 13:24
+-- Generated: 2025-02-11 17:47
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -20,7 +20,14 @@ CREATE TABLE IF NOT EXISTS `Culdampolla`.`glasses` (
   `glasses_price` FLOAT(11) NOT NULL,
   `glasses_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `glasses_created` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`glasses_id`))
+  `suppliers_suppliers_id` INT(11) NOT NULL,
+  PRIMARY KEY (`glasses_id`, `suppliers_suppliers_id`),
+  INDEX `fk_glasses_suppliers1_idx` (`suppliers_suppliers_id` ASC) VISIBLE,
+  CONSTRAINT `fk_glasses_suppliers1`
+    FOREIGN KEY (`suppliers_suppliers_id`)
+    REFERENCES `Culdampolla`.`suppliers` (`suppliers_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_spanish_ci;
@@ -55,42 +62,20 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_spanish_ci;
 
-CREATE TABLE IF NOT EXISTS `Culdampolla`.`customers_buy_glasses` (
-  `customers_buy_glasses_id` INT(11) NOT NULL,
-  `customers_customers_id` INT(11) NOT NULL,
-  `glasses_glasses_id` INT(11) NOT NULL,
-  PRIMARY KEY (`customers_buy_glasses_id`, `customers_customers_id`, `glasses_glasses_id`),
-  INDEX `fk_customers_buy_glasses_customers_idx` (`customers_customers_id` ASC) VISIBLE,
-  INDEX `fk_customers_buy_glasses_glasses_idx` (`glasses_glasses_id` ASC) VISIBLE,
-  CONSTRAINT `fk_customers_buy_glasses_customers`
-    FOREIGN KEY (`customers_customers_id`)
+CREATE TABLE IF NOT EXISTS `Culdampolla`.`glasses_has_customers` (
+  `glasses_has_customers_glasses_id` INT(11) NOT NULL,
+  `glasses_has_customers_customers_id` INT(11) NOT NULL,
+  PRIMARY KEY (`glasses_has_customers_glasses_id`, `glasses_has_customers_customers_id`),
+  INDEX `fk_glasses_has_customers_customers1_idx` (`glasses_has_customers_customers_id` ASC) VISIBLE,
+  INDEX `fk_glasses_has_customers_glasses1_idx` (`glasses_has_customers_glasses_id` ASC) VISIBLE,
+  CONSTRAINT `fk_glasses_has_customers_glasses1`
+    FOREIGN KEY (`glasses_has_customers_glasses_id`)
+    REFERENCES `Culdampolla`.`glasses` (`glasses_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_glasses_has_customers_customers1`
+    FOREIGN KEY (`glasses_has_customers_customers_id`)
     REFERENCES `Culdampolla`.`customers` (`customers_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_customers_buy_glasses_glasses`
-    FOREIGN KEY (`glasses_glasses_id`)
-    REFERENCES `Culdampolla`.`glasses` (`glasses_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_spanish_ci;
-
-CREATE TABLE IF NOT EXISTS `Culdampolla`.`suppliers_sell_glasses` (
-  `suppliers_sell_glasses_id` INT(11) NOT NULL,
-  `suppliers_suppliers_id` INT(11) NOT NULL,
-  `glasses_glasses_id` INT(11) NOT NULL,
-  PRIMARY KEY (`suppliers_sell_glasses_id`, `suppliers_suppliers_id`, `glasses_glasses_id`),
-  INDEX `fk_suppliers_sell_glasses_suppliers_idx` (`suppliers_suppliers_id` ASC) VISIBLE,
-  INDEX `fk_suppliers_sell_glasses_glasses_idx` (`glasses_glasses_id` ASC) VISIBLE,
-  CONSTRAINT `fk_suppliers_sell_glasses_suppliers`
-    FOREIGN KEY (`suppliers_suppliers_id`)
-    REFERENCES `Culdampolla`.`suppliers` (`suppliers_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_suppliers_sell_glasses_glasses`
-    FOREIGN KEY (`glasses_glasses_id`)
-    REFERENCES `Culdampolla`.`glasses` (`glasses_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
