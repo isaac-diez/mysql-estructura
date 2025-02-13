@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2025-02-13 13:47
+-- Generated: 2025-02-13 16:36
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -144,10 +144,11 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `Pizzeria`.`order_items` (
-  `orders_orders_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_items_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `orders_orders_id` INT(11) NOT NULL,
   `products_products_id` INT(11) NOT NULL,
   `order_quantity` INT(11) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`orders_orders_id`),
+  PRIMARY KEY (`order_items_id`),
   INDEX `fk_order_items_orders1_idx` (`orders_orders_id` ASC) VISIBLE,
   INDEX `fk_order_items_products1_idx` (`products_products_id` ASC) VISIBLE,
   CONSTRAINT `fk_order_items_orders1`
