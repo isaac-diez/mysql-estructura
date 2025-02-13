@@ -1,6 +1,5 @@
 📄**Description**
 
-### English
 Task 2.1 is about practice and learn how to model SQL databaes.
 
 - Exercise 1: [README.md](https://github.com/isaac-diez/mysql-estructura/tree/master/Culdampolla)
