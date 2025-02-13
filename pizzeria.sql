@@ -1,5 +1,5 @@
 -- MySQL Workbench Synchronization
--- Generated: 2025-02-11 17:23
+-- Generated: 2025-02-13 13:47
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `Pizzeria`.`cities` (
   `cities_id` INT(11) NOT NULL AUTO_INCREMENT,
   `cities_name` VARCHAR(60) NOT NULL,
   `provinces_provinces_id` INT(11) NOT NULL,
-  PRIMARY KEY (`cities_id`, `provinces_provinces_id`),
+  PRIMARY KEY (`cities_id`),
   INDEX `fk_cities_provinces1_idx` (`provinces_provinces_id` ASC) VISIBLE,
   CONSTRAINT `fk_cities_provinces1`
     FOREIGN KEY (`provinces_provinces_id`)
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `Pizzeria`.`customers` (
   `customers_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `customers_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `cities_cities_id` INT(11) NOT NULL,
-  PRIMARY KEY (`customers_id`, `cities_cities_id`),
+  PRIMARY KEY (`customers_id`),
   INDEX `fk_customers_cities1_idx` (`cities_cities_id` ASC) VISIBLE,
   CONSTRAINT `fk_customers_cities1`
     FOREIGN KEY (`cities_cities_id`)
@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS `Pizzeria`.`orders` (
   `orders_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `orders_type` VARCHAR(8) NOT NULL,
   `orders_productQty` INT(11) NOT NULL,
-  `orders_price` DECIMAL NOT NULL,
+  `orders_price` DECIMAL(10,2) NOT NULL,
   `orders_timeOfDelivery` VARCHAR(45) NULL DEFAULT NULL,
   `orders_employees_id` INT(11) NOT NULL,
   `orders_customers_id` INT(11) NOT NULL,
-  PRIMARY KEY (`orders_id`, `orders_employees_id`, `orders_customers_id`),
+  PRIMARY KEY (`orders_id`),
   INDEX `fk_orders_employees1_idx` (`orders_employees_id` ASC) VISIBLE,
   INDEX `fk_orders_customers1_idx` (`orders_customers_id` ASC) VISIBLE,
   CONSTRAINT `fk_orders_employees1`
@@ -77,38 +77,42 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `Pizzeria`.`products` (
-  `products_id` INT(11) NOT NULL COMMENT '\n',
+  `products_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '\n',
   `products_name` VARCHAR(45) NOT NULL,
   `products_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `products_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `category_category_id` INT(11) NOT NULL,
-  PRIMARY KEY (`products_id`, `category_category_id`),
+  `products_image` VARCHAR(255) NULL DEFAULT NULL COMMENT '\n',
+  `products_description` VARCHAR(255) NULL DEFAULT NULL,
+  `products_price` DECIMAL(10,2) NOT NULL,
+  `products_type` ENUM('pizza', 'burger', 'drink') NOT NULL,
+  `category_category_id` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`products_id`),
   INDEX `fk_products_category1_idx` (`category_category_id` ASC) VISIBLE,
   CONSTRAINT `fk_products_category1`
     FOREIGN KEY (`category_category_id`)
-    REFERENCES `Pizzeria`.`category` (`category_id`)
+    REFERENCES `Pizzeria`.`categories` (`categories_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Pizzeria`.`category` (
-  `category_id` INT(11) NOT NULL,
-  `category_name` VARCHAR(45) NOT NULL,
-  `category_created` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `category_modified` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`category_id`))
+CREATE TABLE IF NOT EXISTS `Pizzeria`.`categories` (
+  `categories_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `categories_name` VARCHAR(45) NOT NULL,
+  `categories_created` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `categories_modified` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`categories_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `Pizzeria`.`stores` (
-  `stores_id` INT(11) NOT NULL,
+  `stores_id` INT(11) NOT NULL AUTO_INCREMENT,
   `stores_address` VARCHAR(60) NOT NULL,
   `stores_zipcode` VARCHAR(5) NOT NULL,
-  `stores_created` DATETIME NOT NULL,
-  `stores_modified` DATETIME NOT NULL,
+  `stores_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `stores_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `cities_cities_id` INT(11) NOT NULL,
-  PRIMARY KEY (`stores_id`, `cities_cities_id`),
+  PRIMARY KEY (`stores_id`),
   INDEX `fk_stores_cities1_idx` (`cities_cities_id` ASC) VISIBLE,
   CONSTRAINT `fk_stores_cities1`
     FOREIGN KEY (`cities_cities_id`)
@@ -119,7 +123,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `Pizzeria`.`employees` (
-  `employees_id` INT(11) NOT NULL,
+  `employees_id` INT(11) NOT NULL AUTO_INCREMENT,
   `employees_name` VARCHAR(45) NOT NULL,
   `employees_lastName` VARCHAR(45) NOT NULL,
   `employees_idDocument` VARCHAR(10) NOT NULL,
@@ -128,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `Pizzeria`.`employees` (
   `employees_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `employees_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `stores_stores_id` INT(11) NOT NULL,
-  PRIMARY KEY (`employees_id`, `stores_stores_id`),
+  PRIMARY KEY (`employees_id`),
   UNIQUE INDEX `employees_idDocument_UNIQUE` (`employees_idDocument` ASC) VISIBLE,
   INDEX `fk_employees_stores_idx` (`stores_stores_id` ASC) VISIBLE,
   CONSTRAINT `fk_employees_stores`
@@ -139,19 +143,20 @@ CREATE TABLE IF NOT EXISTS `Pizzeria`.`employees` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `Pizzeria`.`orders_has_products` (
-  `orders_orders_id` INT(11) NOT NULL,
-  `orders_products_id` INT(11) NOT NULL,
-  PRIMARY KEY (`orders_orders_id`, `orders_products_id`),
-  INDEX `fk_orders_has_products_products1_idx` (`orders_products_id` ASC) VISIBLE,
-  INDEX `fk_orders_has_products_orders1_idx` (`orders_orders_id` ASC) VISIBLE,
-  CONSTRAINT `fk_orders_has_products_orders1`
+CREATE TABLE IF NOT EXISTS `Pizzeria`.`order_items` (
+  `orders_orders_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `products_products_id` INT(11) NOT NULL,
+  `order_quantity` INT(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`orders_orders_id`),
+  INDEX `fk_order_items_orders1_idx` (`orders_orders_id` ASC) VISIBLE,
+  INDEX `fk_order_items_products1_idx` (`products_products_id` ASC) VISIBLE,
+  CONSTRAINT `fk_order_items_orders1`
     FOREIGN KEY (`orders_orders_id`)
     REFERENCES `Pizzeria`.`orders` (`orders_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_orders_has_products_products1`
-    FOREIGN KEY (`orders_products_id`)
+  CONSTRAINT `fk_order_items_products1`
+    FOREIGN KEY (`products_products_id`)
     REFERENCES `Pizzeria`.`products` (`products_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)

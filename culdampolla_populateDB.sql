@@ -26,14 +26,14 @@ VALUES
 (-2.5, 'floating', 'gray', 'red', 230.00, 5),
 (0.75, 'metallic', 'gold', 'gray', 195.00, 5);
 INSERT INTO `Culdampolla`.`orders` 
-(`orders_created`, `orders_total_price`, `orders_status`, `orders_type`, `customers_customers_id`, `suppliers_suppliers_id`)
+(`orders_created`, `orders_total_price`, `orders_status`, `orders_type`, `customers_customers_id`, `suppliers_suppliers_id`, `orders_salesperson`)
 VALUES
 -- Sales orders (ventas a clientes)
-('2024-01-15', 120.50, 'pending', 'sale', 1, NULL),
-('2024-02-03', 75.00, 'processing', 'sale', 2, NULL),
-('2024-03-20', 210.99, 'shipped', 'sale', 3, NULL),
-('2024-04-10', 89.50, 'delivered', 'sale', 4, NULL),
-('2024-05-05', 150.75, 'cancelled', 'sale', 5, NULL),
+('2024-01-15', 120.50, 'pending', 'sale', 1, NULL, 'Mark'),
+('2024-02-03', 75.00, 'processing', 'sale', 2, NULL, 'Roy'),
+('2024-03-20', 210.99, 'shipped', 'sale', 3, NULL, 'Mary'),
+('2024-04-10', 89.50, 'delivered', 'sale', 4, NULL, 'Lilly'),
+('2024-05-05', 150.75, 'cancelled', 'sale', 5, NULL, 'Mark'),
 
 -- Purchase orders (compras a proveedores)
 ('2024-06-18', 500.00, 'pending', 'purchase', NULL, 1),
